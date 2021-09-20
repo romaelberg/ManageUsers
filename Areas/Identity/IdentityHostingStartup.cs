@@ -15,7 +15,7 @@ namespace ManageUsers.Areas.Identity
         {
             builder.ConfigureServices((context, services) => {
                 services.AddDbContext<WebApp1Context>(options =>
-                     options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection")));
+                     options.UseSqlServer(context.Configuration.GetConnectionString("AuthContextConnection")));
 
                 services.AddDefaultIdentity<WebApp1User>()
                     .AddEntityFrameworkStores<WebApp1Context>();

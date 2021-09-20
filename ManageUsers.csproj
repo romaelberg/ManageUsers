@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="5.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.10" />
@@ -32,6 +33,10 @@
     <PackageReference Include="Microsoft.Owin.Security" Version="4.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.0-*" />
     <PackageReference Include="PagedList" Version="1.17.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\ServiceDependencies\" />
   </ItemGroup>
 
 </Project>

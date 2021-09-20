@@ -15,10 +15,12 @@ namespace ManageUsers.Pages
         }
         public int FacebookUsersCount { get; set; }
         public int GoogleUsersCount { get; set; }
+        public int VkUsersCount { get; set; }
         public void OnGet()
         {
             FacebookUsersCount = _context.WebApp1Users.Count(t => t.SocialNetwork == "Facebook");
             GoogleUsersCount = _context.WebApp1Users.Count(t => t.SocialNetwork == "Google");
+            VkUsersCount = _context.WebApp1Users.Count(t => t.SocialNetwork == "Vkontakte");
         }
     }
 }

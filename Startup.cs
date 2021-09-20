@@ -5,15 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ManageUsers.Areas.Identity.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Facebook;
 
 namespace ManageUsers
 {
@@ -30,12 +26,18 @@ namespace ManageUsers
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ManageUsersIdentityDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("AuthContextConnection")));
            // services.AddScoped<AuthMiddleware>();
             services.AddAuthentication()
         .AddFacebook(options => {
             options.AppId = "446854986600730";
             options.AppSecret = "0add90d0b85d0a8790a585d8b26c2c8c";
+        })
+        .AddVkontakte(options =>
+        {
+            options.ClientId = "7956899";
+            options.ClientSecret = "05f5as7IyoKJFTP0Ikq0";
+            options.Scope.Add("email");
         })
         .AddGoogle(options =>
         {
@@ -72,8 +74,9 @@ namespace ManageUsers
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
+            serviceProvider.GetService<WebApp1Context>().Database.EnsureCreated();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
