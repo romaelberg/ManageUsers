@@ -1,0 +1,107 @@
+﻿@page
+@model ManageUsers.Pages.UsersTableModel;
+
+@{
+    ViewData["Title"] = "Students";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.2/css/jquery.dataTables.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="https://datatables.net/download/build/nightly/jquery.dataTables.js"></script>
+
+    <form method="post">
+        <h2>Users Table</h2>
+        <div class="form-group text-right">
+            <input type="submit" name="submit" value="Delete" id="DeleteBtn" class="btn btn-danger btn-sm">
+            <input type="submit" name="submit" value="Block" id="BlockBtn" class="btn btn-secondary btn-sm">
+            <input type="submit" name="submit" value="Unblock" id="UnblockBtn" class="btn btn-warning btn-sm">
+        </div>
+        <div class="category-filter">
+            <select id="categoryFilter" class="form-control">
+                <option value="">Social Network</option>
+                <option value="Facebook">Facebook</option>
+                <option value="Google">Google</option>
+            </select>
+        </div>
+        <br />
+        <div class="status-filter">
+            <select id="statusFilter" class="form-control">
+                <option value="">Status</option>
+                <option value="True">banned</option>
+                <option value="False">active</option>
+            </select>
+        </div>
+        <table class="table" id="filterTable">
+            <thead>
+                <tr>
+                    <th data-sort-method='none'><input type="checkbox" value="all" onClick="checkAll(this);"></th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Registration Date</th>
+                    <th>LastSeen</th>
+                    <th>Social Network</th>
+                    <th>Is Banned</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.WebAppUsers)
+                {
+                    <tr>
+                        <td><input name="AreChecked" type="checkbox" value="@item.Id" /></td>
+                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FirstSignIn)</td>
+                        <td>@Html.DisplayFor(modelItem => item.LastSignIn)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SocialNetwork)</td>
+                        <td>@item.IsBanned</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </form>
+    <script>
+        $("document").ready(function () {
+            $("#filterTable").dataTable({
+                "searching": true,
+                "paging": false,
+                "info": false
+                
+            });
+            //Get a reference to the new datatable
+            var table = $('#filterTable').DataTable();
+            //Take the category filter drop down and append it to the datatables_filter div.
+            //You can use this same idea to move the filter anywhere withing the datatable that you want.
+            //$("#filterTable_filter.dataTables_filter").append($("#categoryFilter"));
+
+            //Get the column index for the Category column to be used in the method below ($.fn.dataTable.ext.search.push)
+            //This tells datatables what column to filter on when a user selects a value from the dropdown.
+            //It's important that the text used here (Category) is the same for used in the header of the column to filter
+            var categoryIndex = 0;
+            $("#filterTable th").each(function (i) {
+                if ($($(this)).html() == "Social Network") {
+                    categoryIndex = i; return false;
+                }
+            });
+            //Use the built in datatables API to filter the existing rows by the Category column
+            //Set the change event for the Category Filter dropdown to redraw the datatable each time
+            //a user selects a new filter.
+            $("#categoryFilter").change(function (e) {
+                var val = $(this).val();
+                table.column(5)
+                    .search(val ? '^' + $(this).val() + '$' : val, true, false)
+                    .draw();
+            });
+            $("#statusFilter").change(function (e) {
+                var val = $(this).val();
+                table.column(6)
+                    .search(val ? '^' + $(this).val() + '$' : val, true, false)
+                    .draw();
+            });
+            table.draw();
+        });
+    </script>
+}

@@ -1,0 +1,40 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+
+<div class="text-center">
+    <canvas class="mb-3 w-75 h-75 d-inline-block" id="usersChart"></canvas>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var ctx = document.getElementById('usersChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Facebook', 'Google'],
+                datasets: [{
+                    label: 'Users Pie',
+                    data: [@Model.FacebookUsersCount, @Model.GoogleUsersCount],
+                    backgroundColor: [
+                        'rgb(255, 99, 132)',
+                        'rgb(54, 162, 235)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
