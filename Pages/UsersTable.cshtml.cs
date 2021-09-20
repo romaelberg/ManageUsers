@@ -26,51 +26,13 @@ namespace ManageUsers.Pages
             _signInManager = signInManager;
             _userManager = userManager;
         }
-        public string NameSort { get; set; }
-        public string DateSort { get; set; }
-        public string CurrentFilter { get; set; }
-        public string CurrentSort { get; set; }
-
         public List<WebApp1User> WebAppUsers { get; set; }
         public List<string> SocialNetworks { get; set; }
 
-        public async Task OnGetAsync(string sortOrder,
-            string currentFilter, string searchString, int? pageIndex)
+        public async Task OnGetAsync()
         {
-            CurrentSort = sortOrder;
-            NameSort = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            DateSort = sortOrder == "Date" ? "date_desc" : "Date";
-            if (searchString != null)
-            {
-                pageIndex = 1;
-            }
-            else
-            {
-                searchString = currentFilter;
-            }
-
-            CurrentFilter = searchString;
-            IQueryable<WebApp1User> webAppUsersIQ = from s in _context.WebApp1Users
-                                             select s;
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                webAppUsersIQ = webAppUsersIQ.Where(s => s.SocialNetwork.Contains(searchString)
-                                       || s.UserName.Contains(searchString));
-            }
-            switch (sortOrder)
-            {
-                case "name_desc":
-                    webAppUsersIQ = webAppUsersIQ.OrderByDescending(s => s.UserName);
-                    break;
-                case "Date":
-                    webAppUsersIQ = webAppUsersIQ.OrderBy(s => s.LastSignIn);
-                    break;
-                default:
-                    webAppUsersIQ = webAppUsersIQ.OrderBy(s => s.UserName);
-                    break;
-            }
-
-            var pageSize = Configuration.GetValue("PageSize", 4);
+            IQueryable<WebApp1User> webAppUsersIQ = from s in _context.WebApp1Users.AsNoTracking()
+                                                    select s;
             WebAppUsers = webAppUsersIQ.AsNoTracking().ToList();
             SocialNetworks = _context.WebApp1Users.Select(u => u.SocialNetwork).Distinct().ToList();
         }
@@ -122,9 +84,7 @@ namespace ManageUsers.Pages
                 }
             }
             await _context.SaveChangesAsync();
-            var pageSize = Configuration.GetValue("PageSize", 4);
-            WebAppUsers = await PaginatedList<WebApp1User>.CreateAsync(
-                webAppUsersIQ.AsNoTracking(), 1, pageSize);
+            WebAppUsers = webAppUsersIQ.AsNoTracking().ToList();
         }
     }
 }
