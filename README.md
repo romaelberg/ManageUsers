@@ -1,12 +1,8 @@
-# Additional Claims Sample App
-
-The sample app demonstrates how to:
-
-* Obtain the user's given name and surname from Google and store the name claims with the values provided by Google.
-* Store the Google access token in the user's `AuthenticationProperties`.
-
-To use the sample app:
-
-1. Register the app and obtain a valid client ID and client secret for Google authentication. For more information, see [Google external login setup](https://docs.microsoft.com/aspnet/core/security/authentication/social/google-logins).
-1. Provide the client ID and client secret to the app in the [GoogleOptions](https://docs.microsoft.com/dotnet/api/microsoft.aspnetcore.authentication.google.googleoptions) of `Startup.ConfigureServices`.
-1. Run the app and request the My Claims page. When the user isn't signed in, the app redirects to Google. Sign in with Google. Google redirects the user back to the app (`/MyClaims`). The user is authenticated, and the My Claims page is loaded. The given name and surname claims are present under **User Claims** with the values provided by Google. The access token is displayed under **Authentication Properties**.
+﻿Web-приложение, которое позволяет пользователям аутентифицироваться через соцсети (не менее 3, хотя бы одна должна быть Facebook или Twitter или Google или VK).
+На главной странице (доступной в т.ч. и неаутентифицированным пользователям) отображается общее число пользователей сайта из каждой соцсети (прикрутить какой-нибудь chart на JavaScript, рисовать пирожковую диаграмму с подписями и числами).
+Неаутентифицированные пользователи не имеют доступа к странице с пользователями (могут достучаться только к главной странице и к иконкам входа через соцсети).
+Аутентифицированные пользователи видят таблицу с пользователями (таблица с уникальным идентификатором, именем в соцсети, соцсетью, датой первого входа, датой последнего входа, статусом активен/заблокирован). Таблица позволяет сортировать по любому полю (кликом на заголовке) и фильтровать (выбирая в заголовке из выпадающего списка) по полям "статус" и "соцсеть".
+Самая левая колонка содержит чек-боксы для множественного выделения, в заголовке этой колонки чек-бокс без подписи для действий "выделить всех" / "снять все выделение" (выделяются только отфильтрованные пользователи).
+Над таблицей размещен тулбар с действиями: Block, Unblock, Delete (два последних можно и лучше иконками - всё это не просто три кнопки).
+Пользователь может удалить или заблокировать себя — при этом сразу должен быть разлогинен. Если кто-то другой блокирует или удаляет пользователя, то при любом следующем действии пользователь переправляется на главную страницу.
+Удаление пользователя приводит лишь к тому, что пользователь удаляется из базы и может без проблем войти заново. Блокировка пользователя приводит к тому, что пользователь не может войти - он может пройти аутентификацию через свою соцсеть, но потом перенаправляется на главную страницу и ему показывается бутстраповский алерт "This account is blocked.".
